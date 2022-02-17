@@ -14,6 +14,11 @@ config = {
     'database': 'testdb'
 }
 
+GET_CUSTOM_FIELDS = 'SELECT * FROM CustomFields;'
+
+GET_CUSTOM_FIELD_OPTIONS = 'SELECT CustomFieldOptions.* FROM CustomFieldOptions ' \
+                           'JOIN CustomFields ON CustomFieldOptions.IdCustomField = CustomFields.Id;'
+
 INSERT_CARD = 'INSERT INTO CardDetails (' \
               'CardId, CardTitle, CardUrl, Type, Priority,' \
               'MaxWordCount, WordCount, Multiplier,' \
@@ -42,6 +47,14 @@ class DatabaseConnector:
     def __init__(self):
         self.connection = mysql.connector.connect(**config)
         self.cursor = self.connection.cursor()
+
+    def get_custom_fields(self):
+        self.cursor.execute(GET_CUSTOM_FIELDS)
+        return self.cursor.fetchall()
+
+    def get_custom_field_options(self):
+        self.cursor.execute(GET_CUSTOM_FIELD_OPTIONS)
+        return self.cursor.fetchall()
 
     def insert_card_details(self, cards: list):
         values = []

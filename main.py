@@ -1,6 +1,8 @@
 import requests
 import constants
 from card import Card
+from custom_field import CustomField
+from custom_field_options import CustomFieldOption
 from google_service import google_service
 from database import DatabaseConnector
 import time
@@ -15,6 +17,8 @@ def main():
         database_connection = DatabaseConnector()
         Card.docs_service = google_service(constants.DOCS)
         Card.drive_service = google_service(constants.DRIVE)
+        CustomField.instantiate_from_list(database_connection.get_custom_fields())
+        CustomFieldOption.instantiate_from_list(database_connection.get_custom_field_options())
 
         for list_id in completed_list_ids:
             url = f"https://api.trello.com/1/lists/{list_id}/cards"
@@ -31,8 +35,7 @@ def main():
         database_connection.insert_card_details(Card.all_cards)
         database_connection.connection.close()
 
-        for card in Card.all_cards:
-            card.move_card_to_ready()
+        Card.move_cards_to_ready()
 
     time_end = time.time()
     print(f'Time taken for program: {int(time_end - time_start)} seconds.')

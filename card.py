@@ -2,6 +2,8 @@ import re
 from datetime import datetime
 import requests
 import constants
+from custom_field import CustomField
+from custom_field_options import CustomFieldOption
 from docs import Docs
 from google_service import get_id_from_url
 
@@ -32,30 +34,18 @@ class Card:
         self.priority = None
         self.persona = None
         self.surfer_seo = None
-        self.doc_file_original = None
+        self.doc_file_original = ''
         self.doc_file_copy1 = None
         self.submitted_date = None
         self.status = STATUS_PROOFREADING
         self.remarks = 'None'
-        self.value_fields = None
-        self.type_values = None
-        self.priority_values = None
-        self.persona_values = None
-
-        if self.id_board == constants.BOARD_ID_TEAM_1:
-            self.team = 'Team Alpha'
-            self.value_fields = constants.VALUE_FIELDS_TEAM_1
-            self.type_values = constants.TYPE_VALUES_TEAM_1
-            self.priority_values = constants.PRIORITY_VALUES_TEAM_1
-            self.persona_values = constants.PERSONA_VALUES_TEAM_1
-        elif self.id_board == constants.BOARD_ID_TEAM_2:
-            self.team = 'Team Beta'
-            self.value_fields = constants.VALUE_FIELDS_TEAM_2
-            self.type_values = constants.TYPE_VALUES_TEAM_2
-            self.priority_values = constants.PRIORITY_VALUES_TEAM_2
-            self.persona_values = constants.PERSONA_VALUES_TEAM_2
 
         try:
+            if self.id_board == constants.BOARD_ID_TEAM_ALPHA:
+                self.team = 'Team Alpha'
+            elif self.id_board == constants.BOARD_ID_TEAM_BETA:
+                self.team = 'Team Beta'
+
             max_word_count_string = re.findall(pattern=constants.MAX_WORD_COUNT_PATTERN, string=self.title)[0]
             self.max_word_count = int(max_word_count_string.split(' ')[0])
             self.set_card_writer()
@@ -127,23 +117,21 @@ class Card:
         self.submitted_date = now
 
         for custom_field_json in response.json():
-            val = -1
-            try:
-                val = self.value_fields[custom_field_json['idCustomField']]
-            except KeyError:
-                print(f'Wrong Key!{custom_field_json["idCustomField"]}')
-            if val == 1:
-                self.type = self.type_values[custom_field_json['idValue']]
-                print(f'Type: {self.type}')
-            elif val == 2:
-                self.priority = self.priority_values[custom_field_json['idValue']]
-            elif val == 3:
-                self.persona = self.persona_values[custom_field_json['idValue']]
-            elif val == 4:
+            c_field = CustomField.get_custom_field_by_id(custom_field_json['idCustomField'])
+            if c_field.name == 'Type':
+                cfo = CustomFieldOption.get_custom_field_by_id(custom_field_json['idValue'])
+                self.type = cfo.field_value
+            elif c_field.name == 'Priority':
+                cfo = CustomFieldOption.get_custom_field_by_id(custom_field_json['idValue'])
+                self.priority = cfo.field_value
+            elif c_field.name == 'Persona':
+                cfo = CustomFieldOption.get_custom_field_by_id(custom_field_json['idValue'])
+                self.persona = cfo.field_value
+            elif c_field.name == 'Surfer SEO':
                 self.surfer_seo = custom_field_json['value']['text']
-            elif val == 5:
+            elif c_field.name == 'Client ID':
                 self.client = custom_field_json['value']['number']
-            elif val == 6:
+            elif c_field.name == 'Multiplier':
                 self.multiplier = custom_field_json['value']['number']
 
     def get_card_doc_link(self):
@@ -170,26 +158,32 @@ class Card:
         else:
             self.doc_file_original = self.surfer_seo
 
-    def move_card_to_ready(self):
-        update_url = URL + f'/{self.id}/'
-        params = constants.PARAMS.copy()
-        if self.team == 'Team Beta':
-            params['idBoard'] = '61ed0fd94bf5051e2602d02c'
-            params['idList'] = '61ed0fe3d70a94477f001b6e'
-        else:
-            params['idBoard'] = '619c71771deda242e027685e'
-            params['idList'] = '61e819cda4422b71873dd7f7'
-
-        response = requests.request(
-            "PUT",
-            update_url,
-            params=params,
-            headers=constants.HEADERS
-        )
-        print(response.status_code)
-
     def convert_to_tuple_proofreading(self):
         return (
             self.id, self.title, self.url, self.type, self.priority, self.max_word_count, self.word_count,
             self.multiplier, self.client, self.writer, self.team, self.submitted_date, self.surfer_seo,
             self.doc_file_original, self.doc_file_copy1, self.status)
+
+    @classmethod
+    def move_cards_to_ready(cls):
+        for card in Card.all_cards:
+            update_url = URL + f'/{card.id}/'
+            params = constants.PARAMS.copy()
+            if card.team == 'Team Alpha':
+                params['idBoard'] = constants.BOARD_ID_EDITOR_ALPHA
+                params['idList'] = constants.PROOFREADING_LIST_EDITOR_ALPHA
+            elif card.team == 'Team Beta':
+                params['idBoard'] = constants.BOARD_ID_EDITOR_BETA
+                params['idList'] = constants.PROOFREADING_LIST_EDITOR_BETA
+            else:
+                # Add Team Gamma details later
+                pass
+
+            response = requests.request(
+                "PUT",
+                update_url,
+                params=params,
+                headers=constants.HEADERS
+            )
+
+            print(response.status_code)

@@ -1,17 +1,18 @@
+import os
 import mysql.connector
 from mysql.connector.constants import ClientFlag
 
 # Instance name - flash-hour-338103:asia-south1:test-sql-server
 
 config = {
-    'user': 'root',
-    'password': 'test_sql_159',
+    'user': os.environ.get('DB_USER'),
+    'password': os.environ.get('DB_PASSWORD'),
     'host': '35.200.140.194',
     'client_flags': [ClientFlag.SSL],
-    'ssl_ca': 'ssl/server-ca.pem',
-    'ssl_cert': 'ssl/client-cert.pem',
-    'ssl_key': 'ssl/client-key.pem',
-    'database': 'testdb'
+    'ssl_ca': os.environ.get('SSL_CA'),
+    'ssl_cert': os.environ.get('SSL_CERT'),
+    'ssl_key': os.environ.get('SSL_KEY'),
+    'database': os.environ.get('DB_NAME'),
 }
 
 GET_CUSTOM_FIELDS = 'SELECT * FROM CustomFields;'

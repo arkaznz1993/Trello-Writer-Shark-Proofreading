@@ -11,7 +11,7 @@ from holiday import holiday
 completed_list_ids = ['61eba09d4e95bb2b66dae705', '61eba0f9cf78456e54912062']
 
 
-def main():
+def main(data, context):
     time_start = time.time()
     if not holiday:
         database_connection = DatabaseConnector()

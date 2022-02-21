@@ -39,3 +39,7 @@ def main(data, context):
 
     time_end = time.time()
     print(f'Time taken for program: {int(time_end - time_start)} seconds.')
+
+
+if __name__ == '__main__':
+    main('', '')

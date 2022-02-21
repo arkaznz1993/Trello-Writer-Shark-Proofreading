@@ -76,8 +76,8 @@ class Card:
         except:
             pass
 
-    @classmethod
-    def instantiate_from_json(cls, cards_json):
+    @staticmethod
+    def instantiate_from_json(cards_json):
         for card_json in cards_json:
             Card(
                 card_json['id'],
@@ -119,13 +119,13 @@ class Card:
         for custom_field_json in response.json():
             c_field = CustomField.get_custom_field_by_id(custom_field_json['idCustomField'])
             if c_field.name == 'Type':
-                cfo = CustomFieldOption.get_custom_field_by_id(custom_field_json['idValue'])
+                cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
                 self.type = cfo.field_value
             elif c_field.name == 'Priority':
-                cfo = CustomFieldOption.get_custom_field_by_id(custom_field_json['idValue'])
+                cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
                 self.priority = cfo.field_value
             elif c_field.name == 'Persona':
-                cfo = CustomFieldOption.get_custom_field_by_id(custom_field_json['idValue'])
+                cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
                 self.persona = cfo.field_value
             elif c_field.name == 'Surfer SEO':
                 self.surfer_seo = custom_field_json['value']['text']
@@ -164,8 +164,8 @@ class Card:
             self.multiplier, self.client, self.writer, self.team, self.submitted_date, self.surfer_seo,
             self.doc_file_original, self.doc_file_copy1, self.status)
 
-    @classmethod
-    def move_cards_to_ready(cls):
+    @staticmethod
+    def move_cards_to_ready():
         for card in Card.all_cards:
             update_url = URL + f'/{card.id}/'
             params = constants.PARAMS.copy()

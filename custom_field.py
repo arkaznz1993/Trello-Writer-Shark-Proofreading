@@ -11,13 +11,13 @@ class CustomField:
     def __repr__(self):
         return f"CustomField('{self.id}', '{self.id_board}', '{self.name}', '{self.type}')"
 
-    @classmethod
-    def instantiate_from_list(cls, db_list):
+    @staticmethod
+    def instantiate_from_list(db_list):
         for row in db_list:
             CustomField(row[0], row[1], row[2], row[3])
 
-    @classmethod
-    def get_custom_field_by_id(cls, id):
+    @staticmethod
+    def get_custom_field_by_id(id):
         for custom_field in CustomField.all_custom_fields:
             if id == custom_field.id:
                 return custom_field

@@ -8,7 +8,7 @@ from docs import Docs
 from google_service import get_id_from_url
 
 URL = "https://api.trello.com/1/cards"
-STATUS_PROOFREADING = 2
+STATUS_PROOFREADING = 1
 
 
 class Card:

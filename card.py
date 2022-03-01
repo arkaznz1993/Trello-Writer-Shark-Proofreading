@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 import requests
+from pytz import timezone
 import constants
 from custom_field import CustomField
 from custom_field_options import CustomFieldOption
@@ -111,8 +112,7 @@ class Card:
             params=constants.PARAMS,
             headers=constants.HEADERS
         )
-
-        now = datetime.now()
+        now = datetime.now(timezone('Asia/Kolkata'))
         now = now.strftime('%Y-%m-%d %H:%M:%S')
         self.submitted_date = now
 
@@ -122,24 +122,18 @@ class Card:
                 if c_field.name == 'Type':
                     cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
                     self.type = cfo.field_value
-                    print(self.type)
                 elif c_field.name == 'Priority':
                     cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
                     self.priority = cfo.field_value
-                    print(self.priority)
                 elif c_field.name == 'Persona':
                     cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
                     self.persona = cfo.field_value
-                    print(self.persona)
                 elif c_field.name == 'Surfer SEO':
                     self.surfer_seo = custom_field_json['value']['text']
-                    print(self.surfer_seo)
                 elif c_field.name == 'Client ID':
                     self.client = custom_field_json['value']['number']
-                    print(self.client)
                 elif c_field.name == 'Multiplier':
                     self.multiplier = custom_field_json['value']['number']
-                    print(self.multiplier)
 
     def get_card_doc_link(self):
         actions_url = URL + f'/{self.id}/actions'

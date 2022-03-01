@@ -118,21 +118,28 @@ class Card:
 
         for custom_field_json in response.json():
             c_field = CustomField.get_custom_field_by_id(custom_field_json['idCustomField'])
-            if c_field.name == 'Type':
-                cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
-                self.type = cfo.field_value
-            elif c_field.name == 'Priority':
-                cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
-                self.priority = cfo.field_value
-            elif c_field.name == 'Persona':
-                cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
-                self.persona = cfo.field_value
-            elif c_field.name == 'Surfer SEO':
-                self.surfer_seo = custom_field_json['value']['text']
-            elif c_field.name == 'Client ID':
-                self.client = custom_field_json['value']['number']
-            elif c_field.name == 'Multiplier':
-                self.multiplier = custom_field_json['value']['number']
+            if c_field is not None:
+                if c_field.name == 'Type':
+                    cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
+                    self.type = cfo.field_value
+                    print(self.type)
+                elif c_field.name == 'Priority':
+                    cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
+                    self.priority = cfo.field_value
+                    print(self.priority)
+                elif c_field.name == 'Persona':
+                    cfo = CustomFieldOption.get_custom_field_option_by_id(custom_field_json['idValue'])
+                    self.persona = cfo.field_value
+                    print(self.persona)
+                elif c_field.name == 'Surfer SEO':
+                    self.surfer_seo = custom_field_json['value']['text']
+                    print(self.surfer_seo)
+                elif c_field.name == 'Client ID':
+                    self.client = custom_field_json['value']['number']
+                    print(self.client)
+                elif c_field.name == 'Multiplier':
+                    self.multiplier = custom_field_json['value']['number']
+                    print(self.multiplier)
 
     def get_card_doc_link(self):
         actions_url = URL + f'/{self.id}/actions'

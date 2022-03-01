@@ -100,7 +100,7 @@ class Card:
         )
 
         card_members_json = response.json()
-        self.writer = card_members_json[-1]['data']['member']['id']
+        self.writer = card_members_json[0]['data']['member']['id']
 
     def set_card_custom_fields(self):
         proofreading_field_url = URL + f'/{self.id}/customFieldItems'

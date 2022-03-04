@@ -46,6 +46,8 @@ class Card:
                 self.team = 'Team Alpha'
             elif self.id_board == constants.BOARD_ID_TEAM_BETA:
                 self.team = 'Team Beta'
+            elif self.id_board == constants.BOARD_ID_TEAM_GAMMA:
+                self.team = 'Team Gamma'
 
             max_word_count_string = re.findall(pattern=constants.MAX_WORD_COUNT_PATTERN, string=self.title)[0]
             self.max_word_count = int(max_word_count_string.split(' ')[0])
@@ -177,8 +179,8 @@ class Card:
                 params['idBoard'] = constants.BOARD_ID_EDITOR_BETA
                 params['idList'] = constants.PROOFREADING_LIST_EDITOR_BETA
             else:
-                # Add Team Gamma details later
-                pass
+                params['idBoard'] = constants.BOARD_ID_EDITOR_GAMMA
+                params['idList'] = constants.PROOFREADING_LIST_EDITOR_GAMMA
 
             response = requests.request(
                 "PUT",

@@ -8,8 +8,6 @@ from database import DatabaseConnector
 import time
 from holiday import holiday
 
-completed_list_ids = ['61eba09d4e95bb2b66dae705', '61eba0f9cf78456e54912062']
-
 
 def main(data, context):
     time_start = time.time()
@@ -20,7 +18,7 @@ def main(data, context):
         CustomField.instantiate_from_list(database_connection.get_custom_fields())
         CustomFieldOption.instantiate_from_list(database_connection.get_custom_field_options())
 
-        for list_id in completed_list_ids:
+        for list_id in constants.COMPLETED_LIST_IDS:
             url = f"https://api.trello.com/1/lists/{list_id}/cards"
 
             response = requests.request(

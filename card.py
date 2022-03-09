@@ -163,7 +163,7 @@ class Card:
 
     def convert_to_tuple_proofreading(self):
         return (
-            self.id, self.title, self.url, self.type, self.priority, self.max_word_count, self.word_count,
+            self.id, self.title, self.url, self.type, self.priority, self.persona, self.max_word_count, self.word_count,
             self.multiplier, self.client, self.writer, self.team, self.submitted_date, self.surfer_seo,
             self.doc_file_original, self.doc_file_copy1, self.status)
 

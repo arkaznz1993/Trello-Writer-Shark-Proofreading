@@ -22,15 +22,16 @@ GET_CUSTOM_FIELD_OPTIONS = 'SELECT CustomFieldOptions.* FROM CustomFieldOptions 
 
 INSERT_CARD = 'INSERT INTO CardDetails (' \
               'CardId, CardTitle, CardUrl, Type, Priority,' \
-              'MaxWordCount, WordCount, Multiplier,' \
+              'Persona, MaxWordCount, WordCount, Multiplier,' \
               'Client, Writer, Team, SubmittedDate,' \
               'SurferSEOLink, OriginalDocLink, FirstDocLink, Status)' \
-              'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ' \
+              'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ' \
               'ON DUPLICATE KEY UPDATE ' \
               'CardTitle = VALUES(CardTitle),' \
               'CardUrl = VALUES(CardUrl),' \
               'Type = VALUES(Type),' \
               'Priority = VALUES(Priority),' \
+              'Persona = VALUES(Persona),' \
               'MaxWordCount = VALUES(MaxWordCount),' \
               'WordCount = VALUES(WordCount),' \
               'Multiplier = VALUES(Multiplier),' \

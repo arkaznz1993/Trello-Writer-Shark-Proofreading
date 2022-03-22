@@ -49,7 +49,7 @@ class Card:
             elif self.id_board == constants.BOARD_ID_TEAM_GAMMA:
                 self.team = 'Team Gamma'
 
-            max_word_count_string = re.findall(pattern=constants.MAX_WORD_COUNT_PATTERN, string=self.title)[0]
+            max_word_count_string = re.findall(pattern=constants.MAX_WORD_COUNT_PATTERN, string=self.title.lower())[0]
             self.max_word_count = int(max_word_count_string.split(' ')[0])
             self.set_card_writer()
             self.set_card_custom_fields()

@@ -36,6 +36,8 @@ def google_service(service_type):
 
 
 def get_id_from_url(url):
+    if url[-1] != '/':
+        url = url + '/'
     doc_id = re.search('/[-\w]{25,}/', url).group()
     doc_id = doc_id.removeprefix('/')
     doc_id = doc_id.removesuffix('/')

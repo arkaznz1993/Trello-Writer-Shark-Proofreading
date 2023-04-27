@@ -34,7 +34,7 @@ class Card:
         self.type = None
         self.priority = None
         self.persona = None
-        self.surfer_seo = None
+        self.surfer_seo = ''
         self.doc_file_original = ''
         self.doc_file_copy1 = None
         self.submitted_date = None
@@ -54,7 +54,7 @@ class Card:
             self.max_word_count = int(max_word_count_string.split(' ')[0])
             self.set_card_writer()
             self.set_card_custom_fields()
-            self.get_card_doc_link()
+            self.set_card_doc_link()
 
             if self.doc_file_original.startswith('https://docs.google.com/document/d/'):
                 doc_id = get_id_from_url(self.doc_file_original)
@@ -78,7 +78,7 @@ class Card:
 
             Card.all_cards.append(self)
         except:
-            pass
+            print('Some exception!')
 
     @staticmethod
     def instantiate_from_json(cards_json):
@@ -133,33 +133,16 @@ class Card:
                     self.persona = cfo.field_value
                 elif c_field.name == 'Surfer SEO':
                     self.surfer_seo = custom_field_json['value']['text']
+                elif c_field.name == 'Doc Link':
+                    self.doc_file_original = custom_field_json['value']['text']
+                    print('DOC LINK IS: ' + self.doc_file_original)
                 elif c_field.name == 'Client ID':
                     self.client = custom_field_json['value']['number']
                 elif c_field.name == 'Multiplier':
                     self.multiplier = custom_field_json['value']['number']
 
-    def get_card_doc_link(self):
-        actions_url = URL + f'/{self.id}/actions'
-        params = constants.PARAMS.copy()
-        params["filter"] = "commentCard"
-        response = requests.request(
-            "GET",
-            actions_url,
-            params=params,
-            headers=constants.HEADERS
-        )
-        doc_link = ''
-        for comment_json in response.json():
-            try:
-                comment_text = comment_json['data']['text']
-                if comment_text.startswith('https://docs.google.com/document/d/'):
-                    doc_link = comment_text
-            except:
-                print('Ran into an error.')
-
-        if len(doc_link) > 0:
-            self.doc_file_original = doc_link
-        else:
+    def set_card_doc_link(self):
+        if len(self.surfer_seo) > 0:
             self.doc_file_original = self.surfer_seo
 
     def convert_to_tuple_proofreading(self):
